@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head th:replace="common/header :: common-header" />
+<body>
+
+<div th:replace="adminHome :: navbarAdmin"></div>
+
+<div class="container page-content">
+  <h2 class="text-center">Manage Orders</h2>
+
+  <!-- Order List -->
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>Order ID</th>
+      <th>Username</th>
+      <th>Product</th>
+      <th>Quantity</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="order : ${orders}">
+      <td th:text="${order.id}"></td>
+      <td th:text="${order.user.username}"></td>
+      <td th:text="${order.productName}"></td>
+      <td th:text="${order.quantity}"></td>
+      <td th:text="${order.orderStatus}"></td>
+      <td>
+        <a class="btn btn-primary" th:href="@{/admin/orders/{id}(id=${order.id})}">Edit</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Order Edit Form (Only Shows When Editing an Order) -->
+  <div th:if="${order}">
+    <form th:action="@{/admin/orders/{id}/update(id=${order.id})}" method="post">
+      <fieldset>
+        <legend class="center-block">Update User Order</legend>
+
+        <input type="hidden" name="id" th:value="${order.id}">
+
+        <!-- Order ID -->
+        <div class="form-group row">
+          <label class="col-2 col-form-label text-right">Order ID</label>
+          <div class="col-6">
+            <input type="text" class="form-control" th:value="${order.id}" readonly>
+          </div>
+        </div>
+
+        <!-- Username -->
+        <div class="form-group row">
+          <label class="col-2 col-form-label text-right">Username</label>
+          <div class="col-6">
+            <input type="text" class="form-control" th:value="${order.user.username}" readonly>
+          </div>
+        </div>
+
+        <!-- Order Date -->
+        <div class="form-group row">
+          <label class="col-2 col-form-label text-right">Order Date</label>
+          <div class="col-6">
+            <input type="text" class="form-control" th:value="${#dates.format(order.orderDate, 'yyyy-MM-dd')}" readonly>
+          </div>
+        </div>
+
+        <!-- Product Name -->
+        <div class="form-group row">
+          <label class="col-2 col-form-label text-right">Product Name</label>
+          <div class="col-6">
+            <input type="text" class="form-control" th:value="${order.productName}" readonly>
+          </div>
+        </div>
+
+        <!-- Quantity -->
+        <div class="form-group row">
+          <label class="col-2 col-form-label text-right">Quantity</label>
+          <div class="col-6">
+            <input type="number" class="form-control" name="quantity" th:value="${order.quantity}">
+          </div>
+        </div>
+
+        <!-- Order Total -->
+        <div class="form-group row">
+          <label class="col-2 col-form-label text-right">Total Price</label>
+          <div class="col-6">
+            <input type="text" class="form-control" th:value="${order.orderTotal}" readonly>
+          </div>
+        </div>
+
+        <!-- Order Status -->
+        <div class="form-group row">
+          <label class="col-2 col-form-label text-right">Order Status</label>
+          <div class="col-6">
+            <select class="form-control" name="status">
+              <option th:selected="${order.orderStatus == 'On-progress'}" value="On-progress">On-progress</option>
+              <option th:selected="${order.orderStatus == 'Shipped'}" value="Shipped">Shipped</option>
+              <option th:selected="${order.orderStatus == 'Out-for-delivery'}" value="Out-for-delivery">Out-for-delivery</option>
+              <option th:selected="${order.orderStatus == 'Delivered'}" value="Delivered">Delivered</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Shipping Date -->
+        <div class="form-group row">
+          <label class="col-2 col-form-label text-right">Shipping Date</label>
+          <div class="col-6">
+            <input type="date" class="form-control" name="shippingDate"
+                   th:value="${#dates.format(order.shippingDate, 'yyyy-MM-dd')}">
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="form-group row">
+          <div class="offset-2 col-6">
+            <button type="submit" class="btn btn-success">Update Order</button>
+            <a class="btn btn-danger" th:href="@{/admin/orders}">Cancel</a>
+          </div>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+
+</div>
+
+<div th:replace="common/header :: body-scripts"></div>
+
+</body>
+</html>
